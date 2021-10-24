@@ -1,2 +1,4 @@
 --print test
-print("hello world")
+function nnn(a,b)
+   return a+b
+end
