@@ -3,10 +3,7 @@ local BLUE_LED = 2
 local name,value,start_time_1,end_time_1,start_time_2,end_time_2
 ,start_time_3,end_time_3,start_time_4,end_time_4,timeStr,dateStr,rtctime,rtcdate,getlogTimeon,getlogTimeoff,
 value_1,value_2,value_3,value_4,rtcHr,rtcMin,light_value
--- local TimeOn1, TimeOff1
--- local TimeOn2, TimeOff2
--- local TimeOn3, TimeOff3
--- local TimeOn4, TimeOff4
+local sent = false
 
 netstat = "0"
 getlogTimeon2 = " "
@@ -1111,40 +1108,130 @@ local function control()
       if value_1 == "1" then
          -- print("timer1 strat"..hrstart_time1)
          if hrend_time1 < hrstart_time1 then
-            -- print("special condition")
             hrend_time1 = hrend_time1 + 24
             if rtcHr < hrend_time1 then
-               rtcHr = rtcHr +24
-               -- print("special condition"..rtcHr)
-               -- print("special condition"..hrend_time1)
+               rtcHr = rtcHr + 24
+               
             end
          end
          TimeOn1 = hrstart_time1*60 + minstart_time1
          TimeOff1 = hrend_time1*60 + minend_time1
-         CurrentTime = rtcHr*60 + rtcMin
-         -- print("TimeOn1="..TimeOn1)
-         -- print("Current =".. CurrentTime)
-         -- print("TimeOff1="..TimeOff1)
-         if (TimeOn1 <= CurrentTime) and (CurrentTime < TimeOff1) then
+         CurrentTime1 = rtcHr*60 + rtcMin
+         print("TimeOn1="..TimeOn1)
+         print("Current =".. CurrentTime1)
+         print("TimeOff1="..TimeOff1)
+         print("rtc min="..rtcMin)
+         if (TimeOn1 <= CurrentTime1) and (CurrentTime1 < TimeOff1) then
             gpio.write(BLUE_LED, 1)
-            updatestatusOn()
-            logonlineTimeon()
+            if sent == false then
+               updatestatusOn()
+               logonlineTimeon()
+               sent = true
+            end
             TimeOn1 = nil
             TimeOff1 = nil
-            CurrentTime = nil
+            CurrentTime1 = nil
          else
             gpio.write(BLUE_LED, 0)
-            updatestatusOff()
-            logonlineTimeoff()
-            print("off  1")
+            if sent == false then
+               updatestatusOff()
+               logonlineTimeoff()
+               print("off  1 ************************************************************")
+               sent = true
+            end
          end
       else
          gpio.write(BLUE_LED, 0)
          updatestatusOff()
-         count_off = 0
-         count_on = 0
-         print("off  2")
+         logonlineTimeoff()
       end
+
+      -- if value_2 == "1" then         
+      --    if hrend_time2 < hrstart_time2 then            
+      --       hrend_time2 = hrend_time2 + 24
+      --       if rtcHr < hrend_time2 then
+      --          rtcHr = rtcHr +24               
+      --       end
+      --    end
+      --    TimeOn2 = hrstart_time2*60 + minstart_time2
+      --    TimeOff2 = hrend_time2*60 + minend_time2
+      --    CurrentTime2 = rtcHr*60 + rtcMin
+      --    if (TimeOn2 <= CurrentTime2) and (CurrentTime2 < TimeOff2) then
+      --       gpio.write(BLUE_LED, 1)
+      --       updatestatusOn()
+      --       logonlineTimeon()
+      --       TimeOn2 = nil
+      --       TimeOff2 = nil
+      --       CurrentTime2 = nil
+      --    else
+      --       gpio.write(BLUE_LED, 0)
+      --       updatestatusOff()
+      --       logonlineTimeoff()
+      --       print("off  1")
+      --    end      
+      -- else
+      --    gpio.write(BLUE_LED, 0)
+      --    updatestatusOff()
+      --    logonlineTimeoff()
+      -- end
+
+      -- if value_3 == "1" then         
+      --    if hrend_time3 < hrstart_time3 then            
+      --       hrend_time3 = hrend_time3 + 24
+      --       if rtcHr < hrend_time3 then
+      --          rtcHr = rtcHr +24               
+      --       end
+      --    end
+      --    TimeOn3 = hrstart_time3*60 + minstart_time3
+      --    TimeOff3 = hrend_time3*60 + minend_time3
+      --    CurrentTime3 = rtcHr*60 + rtcMin
+      --    if (TimeOn3 <= CurrentTime3) and (CurrentTime3 < TimeOff3) then
+      --       gpio.write(BLUE_LED, 1)
+      --       updatestatusOn()
+      --       logonlineTimeon()
+      --       TimeOn3 = nil
+      --       TimeOff3 = nil
+      --       CurrentTime3 = nil
+      --    else
+      --       gpio.write(BLUE_LED, 0)
+      --       updatestatusOff()
+      --       logonlineTimeoff()
+      --       print("off  1")
+      --    end
+      -- else
+      --    gpio.write(BLUE_LED, 0)
+      --    updatestatusOff()
+      --    logonlineTimeoff()
+      -- end
+
+      -- if value_4 == "1" then         
+      --    if hrend_time4 < hrstart_time4 then            
+      --       hrend_time4 = hrend_time4 + 24
+      --       if rtcHr < hrend_time4 then
+      --          rtcHr = rtcHr +24               
+      --       end
+      --    end
+      --    TimeOn4 = hrstart_time4*60 + minstart_time4
+      --    TimeOff4 = hrend_time4*60 + minend_time4
+      --    CurrentTime4 = rtcHr*60 + rtcMin
+      --    if (TimeOn4 <= CurrentTime4) and (CurrentTime4 < TimeOff4) then
+      --       gpio.write(BLUE_LED, 1)
+      --       updatestatusOn()
+      --       logonlineTimeon()
+      --       TimeOn4 = nil
+      --       TimeOff4 = nil
+      --       CurrentTime4 = nil
+      --    else
+      --       gpio.write(BLUE_LED, 0)
+      --       updatestatusOff()
+      --       logonlineTimeoff()
+      --       print("off  1")
+      --    end
+      -- else
+      --    gpio.write(BLUE_LED, 0)
+      --    updatestatusOff()
+      --    logonlineTimeoff()
+      -- end   
   else
       print('Main Switch OFF')
       gpio.write(BLUE_LED, 0)
@@ -1305,10 +1392,18 @@ wifi.sta.on('got_ip', function()
   time.settimezone('GMT-7')
   time.initntp()
   mytimer = tmr.create()
+  Time4UpdateLog = tmr.create()
+
   mytimer:register(1000, tmr.ALARM_AUTO, function() 
     updateClock(time.getlocal())
   end)
+
+  Time4UpdateLog:register(5000, tmr.ALARM_AUTO, function() 
+   sent = false
+   end)
+
   mytimer:start()
+  Time4UpdateLog:start()
 end)
 
 -- loop การทำงาน Offline
